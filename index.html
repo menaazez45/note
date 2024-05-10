@@ -70,9 +70,6 @@
 
             // نعرض المحتويات بما فيها الجديدة بعد الحفظ
             displayEntries();
-
-            // نبلغ المستخدم بأن المحتوى تم حفظه
-            alert("تم حفظ المحتوى!");
         }
 
         function displayEntries() {
@@ -101,6 +98,13 @@
                     };
                     entryDiv.appendChild(editButton);
 
+                    var deleteButton = document.createElement("button");
+                    deleteButton.textContent = "حذف";
+                    deleteButton.onclick = function() {
+                        deleteEntry(index);
+                    };
+                    entryDiv.appendChild(deleteButton);
+
                     entriesDiv.appendChild(entryDiv);
                 });
             }
@@ -114,7 +118,16 @@
                 entry.content = newContent;
                 localStorage.setItem("entries", JSON.stringify(entries));
                 displayEntries();
-                alert("تم تعديل المحتوى!");
+            }
+        }
+
+        function deleteEntry(index) {
+            var confirmDelete = confirm("هل أنت متأكد أنك تريد حذف هذا المحتوى؟");
+            if (confirmDelete) {
+                var entries = JSON.parse(localStorage.getItem("entries"));
+                entries.splice(index, 1);
+                localStorage.setItem("entries", JSON.stringify(entries));
+                displayEntries();
             }
         }
     </script>
