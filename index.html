@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدونتي</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .entry {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+        .entry:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>مدونتي</h1>
+        <textarea id="content" placeholder="ابدأ التدوين هنا..."></textarea>
+        <button onclick="saveContent()">حفظ</button>
+        <div id="entries">
+            <!-- المحتويات المحفوظة ستظهر هنا -->
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // عند تحميل الصفحة، نعرض جميع المحتويات المحفوظة
+            displayEntries();
+        };
+
+        function saveContent() {
+            var content = document.getElementById("content").value;
+            var date = new Date().toLocaleString();
+            var entry = { content: content, date: date };
+
+            var entries = localStorage.getItem("entries");
+            entries = entries ? JSON.parse(entries) : [];
+            entries.push(entry);
+            localStorage.setItem("entries", JSON.stringify(entries));
+
+            // نعرض المحتويات بما فيها الجديدة بعد الحفظ
+            displayEntries();
+
+            // نبلغ المستخدم بأن المحتوى تم حفظه
+            alert("تم حفظ المحتوى!");
+        }
+
+        function displayEntries() {
+            var entries = localStorage.getItem("entries");
+            var entriesDiv = document.getElementById("entries");
+            entriesDiv.innerHTML = "";
+
+            if (entries) {
+                entries = JSON.parse(entries);
+                entries.forEach(function(entry, index) {
+                    var entryDiv = document.createElement("div");
+                    entryDiv.classList.add("entry");
+
+                    var contentParagraph = document.createElement("p");
+                    contentParagraph.textContent = entry.content;
+                    entryDiv.appendChild(contentParagraph);
+
+                    var dateParagraph = document.createElement("p");
+                    dateParagraph.textContent = "تاريخ الحفظ: " + entry.date;
+                    entryDiv.appendChild(dateParagraph);
+
+                    var editButton = document.createElement("button");
+                    editButton.textContent = "تعديل";
+                    editButton.onclick = function() {
+                        editEntry(index);
+                    };
+                    entryDiv.appendChild(editButton);
+
+                    entriesDiv.appendChild(entryDiv);
+                });
+            }
+        }
+
+        function editEntry(index) {
+            var entries = JSON.parse(localStorage.getItem("entries"));
+            var entry = entries[index];
+            var newContent = prompt("يرجى تعديل المحتوى:", entry.content);
+            if (newContent !== null) {
+                entry.content = newContent;
+                localStorage.setItem("entries", JSON.stringify(entries));
+                displayEntries();
+                alert("تم تعديل المحتوى!");
+            }
+        }
+    </script>
+</body>
+</html>
