@@ -45,7 +45,7 @@
 <body>
     <div class="container">
         <h1>مدونتي</h1>
-        <textarea id="content" placeholder="ابدأ التدوين هنا..." required></textarea>
+        <textarea id="content" placeholder="ابدأ التدوين هنا..."></textarea>
         <button onclick="saveContent()">حفظ</button>
         <div id="entries">
             <!-- المحتويات المحفوظة ستظهر هنا -->
@@ -63,17 +63,17 @@
             var date = new Date().toLocaleString();
             var entry = { content: content, date: date };
 
-            var entries = localStorage.getItem("entries");
+            var entries = getCookie("entries");
             entries = entries ? JSON.parse(entries) : [];
             entries.push(entry);
-            localStorage.setItem("entries", JSON.stringify(entries));
+            setCookie("entries", JSON.stringify(entries));
 
             // نعرض المحتويات بما فيها الجديدة بعد الحفظ
             displayEntries();
         }
 
         function displayEntries() {
-            var entries = localStorage.getItem("entries");
+            var entries = getCookie("entries");
             var entriesDiv = document.getElementById("entries");
             entriesDiv.innerHTML = "";
 
@@ -111,12 +111,12 @@
         }
 
         function editEntry(index) {
-            var entries = JSON.parse(localStorage.getItem("entries"));
+            var entries = JSON.parse(getCookie("entries"));
             var entry = entries[index];
             var newContent = prompt("يرجى تعديل المحتوى:", entry.content);
             if (newContent !== null) {
                 entry.content = newContent;
-                localStorage.setItem("entries", JSON.stringify(entries));
+                setCookie("entries", JSON.stringify(entries));
                 displayEntries();
             }
         }
@@ -124,11 +124,33 @@
         function deleteEntry(index) {
             var confirmDelete = confirm("هل أنت متأكد أنك تريد حذف هذا المحتوى؟");
             if (confirmDelete) {
-                var entries = JSON.parse(localStorage.getItem("entries"));
+                var entries = JSON.parse(getCookie("entries"));
                 entries.splice(index, 1);
-                localStorage.setItem("entries", JSON.stringify(entries));
+                setCookie("entries", JSON.stringify(entries));
                 displayEntries();
             }
+        }
+
+        // دوال للتعامل مع ملفات تعريف الارتباط
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
         }
     </script>
 </body>
