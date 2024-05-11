@@ -63,17 +63,17 @@
             var date = new Date().toLocaleString();
             var entry = { content: content, date: date };
 
-            var entries = getCookie("entries");
+            var entries = localStorage.getItem("entries");
             entries = entries ? JSON.parse(entries) : [];
             entries.push(entry);
-            setCookie("entries", JSON.stringify(entries));
+            localStorage.setItem("entries", JSON.stringify(entries));
 
             // نعرض المحتويات بما فيها الجديدة بعد الحفظ
             displayEntries();
         }
 
         function displayEntries() {
-            var entries = getCookie("entries");
+            var entries = localStorage.getItem("entries");
             var entriesDiv = document.getElementById("entries");
             entriesDiv.innerHTML = "";
 
@@ -111,12 +111,12 @@
         }
 
         function editEntry(index) {
-            var entries = JSON.parse(getCookie("entries"));
+            var entries = JSON.parse(localStorage.getItem("entries"));
             var entry = entries[index];
             var newContent = prompt("يرجى تعديل المحتوى:", entry.content);
             if (newContent !== null) {
                 entry.content = newContent;
-                setCookie("entries", JSON.stringify(entries));
+                localStorage.setItem("entries", JSON.stringify(entries));
                 displayEntries();
             }
         }
@@ -124,33 +124,11 @@
         function deleteEntry(index) {
             var confirmDelete = confirm("هل أنت متأكد أنك تريد حذف هذا المحتوى؟");
             if (confirmDelete) {
-                var entries = JSON.parse(getCookie("entries"));
+                var entries = JSON.parse(localStorage.getItem("entries"));
                 entries.splice(index, 1);
-                setCookie("entries", JSON.stringify(entries));
+                localStorage.setItem("entries", JSON.stringify(entries));
                 displayEntries();
             }
-        }
-
-        // دوال للتعامل مع ملفات تعريف الارتباط
-        function setCookie(name, value, days) {
-            var expires = "";
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000*99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999*999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999*99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/";
-        }
-
-        function getCookie(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
         }
     </script>
 </body>
